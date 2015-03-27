@@ -10,7 +10,7 @@
 				margin: 0px;
 				overflow: hidden;
 			}
-			
+
 			#info {
 				position: absolute;
 				top: 0px; width: 100%;
@@ -29,7 +29,7 @@
 	</head>
 	<body>
 
-		<div id="info"><a href="http://github.com/mrdoob/three.js" target="_blank">three.js webgl</a> - materials - dynamic cube reflection<br/>Photo by <a href="http://www.flickr.com/photos/jonragnarsson/2294472375/" target="_blank">J&oacute;n Ragnarsson</a>.</div>
+		<div id="info"><a href="http://threejs.org" target="_blank">three.js webgl</a> - materials - dynamic cube reflection<br/>Photo by <a href="http://www.flickr.com/photos/jonragnarsson/2294472375/" target="_blank">J&oacute;n Ragnarsson</a>.</div>
 
 		<script src="../build/three.min.js"></script>
 
@@ -37,7 +37,7 @@
 
 			var camera, cubeCamera, scene, renderer;
 			var cube, sphere, torus;
-			
+
 			var fov = 70,
 			isUserInteracting = false,
 			onMouseDownMouseX = 0, onMouseDownMouseY = 0,
@@ -45,7 +45,7 @@
 			lat = 0, onMouseDownLat = 0,
 			phi = 0, theta = 0;
 
-			var texture = THREE.ImageUtils.loadTexture( 'textures/2294472375_24a3b8ef46_o.jpg', new THREE.UVMapping(), function () {
+			var texture = THREE.ImageUtils.loadTexture( 'textures/2294472375_24a3b8ef46_o.jpg', THREE.UVMapping, function () {
 
 				init();
 				animate();
@@ -63,6 +63,7 @@
 				scene.add( mesh );
 
 				renderer = new THREE.WebGLRenderer( { antialias: true } );
+				renderer.setPixelRatio( window.devicePixelRatio );
 				renderer.setSize( window.innerWidth, window.innerHeight );
 
 				cubeCamera = new THREE.CubeCamera( 1, 1000, 256 );
@@ -74,14 +75,14 @@
 				//
 
 				var material = new THREE.MeshBasicMaterial( { envMap: cubeCamera.renderTarget } );
-				
-				sphere = new THREE.Mesh( new THREE.SphereGeometry( 20, 60, 40 ), material );
+
+				sphere = new THREE.Mesh( new THREE.SphereGeometry( 20, 30, 15 ), material );
 				scene.add( sphere );
 
-				cube = new THREE.Mesh( new THREE.CubeGeometry( 20, 20, 20 ), material );
+				cube = new THREE.Mesh( new THREE.BoxGeometry( 20, 20, 20 ), material );
 				scene.add( cube );
 
-				torus = new THREE.Mesh( new THREE.TorusKnotGeometry( 20, 5, 100, 100 ), material );
+				torus = new THREE.Mesh( new THREE.TorusKnotGeometry( 20, 5, 100, 25 ), material );
 				scene.add( torus );
 
 				//
@@ -90,11 +91,11 @@
 				document.addEventListener( 'mousewheel', onDocumentMouseWheel, false );
 				document.addEventListener( 'DOMMouseScroll', onDocumentMouseWheel, false);
 				window.addEventListener( 'resize', onWindowResized, false );
-			
+
 				onWindowResized( null );
 
 			}
-			
+
 			function onWindowResized( event ) {
 
 				renderer.setSize( window.innerWidth, window.innerHeight );
@@ -153,7 +154,7 @@
 				}
 
 				camera.projectionMatrix.makePerspective( fov, window.innerWidth / window.innerHeight, 1, 1100 );
-				
+
 			}
 
 			function animate() {
@@ -164,14 +165,14 @@
 			}
 
 			function render() {
-				
+
 				var time = Date.now();
 
 				lon += .15;
 
 				lat = Math.max( - 85, Math.min( 85, lat ) );
-				phi = ( 90 - lat ) * Math.PI / 180;
-				theta = lon * Math.PI / 180;
+				phi = THREE.Math.degToRad( 90 - lat );
+				theta = THREE.Math.degToRad( lon );
 
 				sphere.position.x = Math.sin( time * 0.001 ) * 30;
 				sphere.position.y = Math.sin( time * 0.0011 ) * 30;
@@ -211,6 +212,6 @@
 			}
 
 		</script>
-	
+
 	</body>
 </html>

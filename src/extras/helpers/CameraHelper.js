@@ -9,22 +9,18 @@
 
 THREE.CameraHelper = function ( camera ) {
 
-	THREE.Object3D.call( this );
+	var geometry = new THREE.Geometry();
+	var material = new THREE.LineBasicMaterial( { color: 0xffffff, vertexColors: THREE.FaceColors } );
 
-	var _this = this;
-
-	this.lineGeometry = new THREE.Geometry();
-	this.lineMaterial = new THREE.LineBasicMaterial( { color: 0xffffff, vertexColors: THREE.FaceColors } );
-
-	this.pointMap = {};
+	var pointMap = {};
 
 	// colors
 
-	var hexFrustum = 0xffaa00,
-	hexCone	   	   = 0xff0000,
-	hexUp	   	   = 0x00aaff,
-	hexTarget  	   = 0xffffff,
-	hexCross   	   = 0x333333;
+	var hexFrustum = 0xffaa00;
+	var hexCone = 0xff0000;
+	var hexUp = 0x00aaff;
+	var hexTarget = 0xffffff;
+	var hexCross = 0x333333;
 
 	// near
 
@@ -73,8 +69,6 @@ THREE.CameraHelper = function ( camera ) {
 	addLine( "cf1", "cf2", hexCross );
 	addLine( "cf3", "cf4", hexCross );
 
-	this.camera = camera;
-
 	function addLine( a, b, hex ) {
 
 		addPoint( a, hex );
@@ -84,99 +78,110 @@ THREE.CameraHelper = function ( camera ) {
 
 	function addPoint( id, hex ) {
 
-		_this.lineGeometry.vertices.push( new THREE.Vector3() );
-		_this.lineGeometry.colors.push( new THREE.Color( hex ) );
+		geometry.vertices.push( new THREE.Vector3() );
+		geometry.colors.push( new THREE.Color( hex ) );
 
-		if ( _this.pointMap[ id ] === undefined ) _this.pointMap[ id ] = [];
-		_this.pointMap[ id ].push( _this.lineGeometry.vertices.length - 1 );
+		if ( pointMap[ id ] === undefined ) {
+
+			pointMap[ id ] = [];
+
+		}
+
+		pointMap[ id ].push( geometry.vertices.length - 1 );
 
 	}
 
-	this.update( camera );
+	THREE.Line.call( this, geometry, material, THREE.LinePieces );
 
-	this.lines = new THREE.Line( this.lineGeometry, this.lineMaterial, THREE.LinePieces );
-	this.add( this.lines );
+	this.camera = camera;
+	this.matrix = camera.matrixWorld;
+	this.matrixAutoUpdate = false;
+
+	this.pointMap = pointMap;
+
+	this.update();
 
 };
 
-THREE.CameraHelper.prototype = Object.create( THREE.Object3D.prototype );
+THREE.CameraHelper.prototype = Object.create( THREE.Line.prototype );
+THREE.CameraHelper.prototype.constructor = THREE.CameraHelper;
 
 THREE.CameraHelper.prototype.update = function () {
 
-	var camera = this.camera;
+	var geometry, pointMap;
+	
+	var vector = new THREE.Vector3();
+	var camera = new THREE.Camera();
 
-	var w = 1;
-	var h = 1;
+	var setPoint = function ( point, x, y, z ) {
 
-	var _this = this;
+		vector.set( x, y, z ).unproject( camera );
 
-	// we need just camera projection matrix
-	// world matrix must be identity
-
-	THREE.CameraHelper.__c.projectionMatrix.copy( camera.projectionMatrix );
-
-	// center / target
-
-	setPoint( "c", 0, 0, -1 );
-	setPoint( "t", 0, 0,  1 );
-
-	// near
-
-	setPoint( "n1", -w, -h, -1 );
-	setPoint( "n2",  w, -h, -1 );
-	setPoint( "n3", -w,  h, -1 );
-	setPoint( "n4",  w,  h, -1 );
-
-	// far
-
-	setPoint( "f1", -w, -h, 1 );
-	setPoint( "f2",  w, -h, 1 );
-	setPoint( "f3", -w,  h, 1 );
-	setPoint( "f4",  w,  h, 1 );
-
-	// up
-
-	setPoint( "u1",  w * 0.7, h * 1.1, -1 );
-	setPoint( "u2", -w * 0.7, h * 1.1, -1 );
-	setPoint( "u3",        0, h * 2,   -1 );
-
-	// cross
-
-	setPoint( "cf1", -w,  0, 1 );
-	setPoint( "cf2",  w,  0, 1 );
-	setPoint( "cf3",  0, -h, 1 );
-	setPoint( "cf4",  0,  h, 1 );
-
-	setPoint( "cn1", -w,  0, -1 );
-	setPoint( "cn2",  w,  0, -1 );
-	setPoint( "cn3",  0, -h, -1 );
-	setPoint( "cn4",  0,  h, -1 );
-
-	function setPoint( point, x, y, z ) {
-
-		THREE.CameraHelper.__v.set( x, y, z );
-		THREE.CameraHelper.__projector.unprojectVector( THREE.CameraHelper.__v, THREE.CameraHelper.__c );
-
-		var points = _this.pointMap[ point ];
+		var points = pointMap[ point ];
 
 		if ( points !== undefined ) {
 
 			for ( var i = 0, il = points.length; i < il; i ++ ) {
 
-				var j = points[ i ];
-				_this.lineGeometry.vertices[ j ].copy( THREE.CameraHelper.__v );
+				geometry.vertices[ points[ i ] ].copy( vector );
 
 			}
 
 		}
 
-	}
+	};
 
-	this.lineGeometry.verticesNeedUpdate = true;
+	return function () {
 
-};
+		geometry = this.geometry;
+		pointMap = this.pointMap;
 
-THREE.CameraHelper.__projector = new THREE.Projector();
-THREE.CameraHelper.__v = new THREE.Vector3();
-THREE.CameraHelper.__c = new THREE.Camera();
+		var w = 1, h = 1;
 
+		// we need just camera projection matrix
+		// world matrix must be identity
+
+		camera.projectionMatrix.copy( this.camera.projectionMatrix );
+
+		// center / target
+
+		setPoint( "c", 0, 0, - 1 );
+		setPoint( "t", 0, 0,  1 );
+
+		// near
+
+		setPoint( "n1", - w, - h, - 1 );
+		setPoint( "n2",   w, - h, - 1 );
+		setPoint( "n3", - w,   h, - 1 );
+		setPoint( "n4",   w,   h, - 1 );
+
+		// far
+
+		setPoint( "f1", - w, - h, 1 );
+		setPoint( "f2",   w, - h, 1 );
+		setPoint( "f3", - w,   h, 1 );
+		setPoint( "f4",   w,   h, 1 );
+
+		// up
+
+		setPoint( "u1",   w * 0.7, h * 1.1, - 1 );
+		setPoint( "u2", - w * 0.7, h * 1.1, - 1 );
+		setPoint( "u3",         0, h * 2,   - 1 );
+
+		// cross
+
+		setPoint( "cf1", - w,   0, 1 );
+		setPoint( "cf2",   w,   0, 1 );
+		setPoint( "cf3",   0, - h, 1 );
+		setPoint( "cf4",   0,   h, 1 );
+
+		setPoint( "cn1", - w,   0, - 1 );
+		setPoint( "cn2",   w,   0, - 1 );
+		setPoint( "cn3",   0, - h, - 1 );
+		setPoint( "cn4",   0,   h, - 1 );
+
+		geometry.verticesNeedUpdate = true;
+
+	};
+
+}();

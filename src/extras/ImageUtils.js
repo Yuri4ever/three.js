@@ -1,72 +1,93 @@
 /**
  * @author alteredq / http://alteredqualia.com/
  * @author mrdoob / http://mrdoob.com/
+ * @author Daosheng Mu / https://github.com/DaoshengMu/
  */
 
 THREE.ImageUtils = {
 
-	crossOrigin: 'anonymous',
+	crossOrigin: undefined,
 
 	loadTexture: function ( url, mapping, onLoad, onError ) {
 
-		var image = new Image();
-		var texture = new THREE.Texture( image, mapping );
-
 		var loader = new THREE.ImageLoader();
+		loader.crossOrigin = this.crossOrigin;
 
-		loader.addEventListener( 'load', function ( event ) {
+		var texture = new THREE.Texture( undefined, mapping );
 
-			texture.image = event.content;
+		loader.load( url, function ( image ) {
+
+			texture.image = image;
 			texture.needsUpdate = true;
 
 			if ( onLoad ) onLoad( texture );
 
-		} );
+		}, undefined, function ( event ) {
 
-		loader.addEventListener( 'error', function ( event ) {
-
-			if ( onError ) onError( event.message );
+			if ( onError ) onError( event );
 
 		} );
 
-		loader.crossOrigin = this.crossOrigin;
-		loader.load( url, image );
+		texture.sourceFile = url;
 
 		return texture;
 
 	},
 
-	loadTextureCube: function ( array, mapping, onLoad ) {
+	loadTextureCube: function ( array, mapping, onLoad, onError ) {
 
-		var i, l, images = [];
-		var texture = new THREE.Texture( images, mapping );
+		var images = [];
+
+		var loader = new THREE.ImageLoader();
+		loader.crossOrigin = this.crossOrigin;
+
+		var texture = new THREE.CubeTexture( images, mapping );
+
+		// no flipping needed for cube textures
 
 		texture.flipY = false;
 
-		images.loadCount = 0;
+		var loaded = 0;
 
-		for ( i = 0, l = array.length; i < l; ++ i ) {
+		var loadTexture = function ( i ) {
 
-			images[ i ] = new Image();
-			images[ i ].onload = function () {
+			loader.load( array[ i ], function ( image ) {
 
-				images.loadCount += 1;
+				texture.images[ i ] = image;
 
-				if ( images.loadCount === 6 ) {
+				loaded += 1;
+
+				if ( loaded === 6 ) {
 
 					texture.needsUpdate = true;
-					if ( onLoad ) onLoad();
+
+					if ( onLoad ) onLoad( texture );
 
 				}
 
-			};
+			}, undefined, onError );
 
-			images[ i ].crossOrigin = this.crossOrigin;
-			images[ i ].src = array[ i ];
+		}
+
+		for ( var i = 0, il = array.length; i < il; ++ i ) {
+
+			loadTexture( i );
 
 		}
 
 		return texture;
+
+	},
+
+	loadCompressedTexture: function () {
+
+		THREE.error( 'THREE.ImageUtils.loadCompressedTexture has been removed. Use THREE.DDSLoader instead.' )
+
+	},
+
+	loadCompressedTextureCube: function () {
+
+		THREE.error( 'THREE.ImageUtils.loadCompressedTextureCube has been removed. Use THREE.DDSLoader instead.' )
 
 	},
 
@@ -123,7 +144,7 @@ THREE.ImageUtils = {
 				points.push( [ - 1, 0, data[ ( y * width + lx ) * 4 ] / 255 * depth ] );
 				points.push( [ - 1, - 1, data[ ( ly * width + lx ) * 4 ] / 255 * depth ] );
 				points.push( [ 0, - 1, data[ ( ly * width + x ) * 4 ] / 255 * depth ] );
-				points.push( [  1, - 1, data[ ( ly * width + ux ) * 4 ] / 255 * depth ] );
+				points.push( [ 1, - 1, data[ ( ly * width + ux ) * 4 ] / 255 * depth ] );
 				points.push( [ 1, 0, data[ ( y * width + ux ) * 4 ] / 255 * depth ] );
 				points.push( [ 1, 1, data[ ( uy * width + ux ) * 4 ] / 255 * depth ] );
 				points.push( [ 0, 1, data[ ( uy * width + x ) * 4 ] / 255 * depth ] );
@@ -184,7 +205,7 @@ THREE.ImageUtils = {
 
 		for ( var i = 0; i < size; i ++ ) {
 
-			data[ i * 3 ] 	  = r;
+			data[ i * 3 ] 	   = r;
 			data[ i * 3 + 1 ] = g;
 			data[ i * 3 + 2 ] = b;
 

@@ -1,210 +1,268 @@
 var list = {
 
-	"Cameras": [
-		[ "Camera", "cameras/Camera" ],
-		[ "OrthographicCamera", "cameras/OrthographicCamera" ],
-		[ "PerspectiveCamera", "cameras/PerspectiveCamera" ]
-	],
+	"Manual": {
+		"Introduction": [
+			[ "Creating a scene", "manual/introduction/Creating-a-scene" ],
+			[ "Matrix transformations", "manual/introduction/Matrix-transformations" ]
 
-	"Core": [
-		[ "Clock", "core/Clock" ],
-		[ "Color", "core/Color" ],
-		[ "Face3", "core/Face3" ],
-		[ "Face4", "core/Face4" ],
-		[ "Frustum", "core/Frustum" ],
-		[ "Geometry", "core/Geometry" ],
-		[ "Math", "core/Math" ],
-		[ "Matrix3", "core/Matrix3" ],
-		[ "Matrix4", "core/Matrix4" ],
-		[ "Object3D", "core/Object3D" ],
-		[ "Projector", "core/Projector" ],
-		[ "Quaternion", "core/Quaternion" ],
-		[ "Ray", "core/Ray" ],
-		[ "Rectangle", "core/Rectangle" ],
-		[ "Spline", "core/Spline" ],
-		[ "UV", "core/UV" ],
-		[ "Vector2", "core/Vector2" ],
-		[ "Vector3", "core/Vector3" ],
-		[ "Vector4", "core/Vector4" ]
-	],
+		]
+	},
 
-	"Lights": [
-		[ "Light", "lights/Light" ],
-		[ "AmbientLight", "lights/AmbientLight" ],
-		[ "DirectionalLight", "lights/DirectionalLight" ],
-		[ "PointLight", "lights/PointLight" ],
-		[ "SpotLight", "lights/SpotLight" ]
-	],
+	"Reference": {
+		"Constants": [
+			[ "CustomBlendingEquation", "api/constants/CustomBlendingEquations"],
+			[ "GLState", "api/constants/GLState"],
+			[ "Materials", "api/constants/Materials"],
+			[ "ShadowingTypes", "api/constants/ShadowingTypes"],
+			[ "Textures", "api/constants/Textures"]
+		],
+
+		"Cameras": [
+			[ "Camera", "api/cameras/Camera" ],
+			[ "CubeCamera", "api/cameras/CubeCamera" ],
+			[ "OrthographicCamera", "api/cameras/OrthographicCamera" ],
+			[ "PerspectiveCamera", "api/cameras/PerspectiveCamera" ]
+		],
+
+		"Core": [
+			[ "BufferAttribute", "api/core/BufferAttribute" ],
+			[ "BufferGeometry", "api/core/BufferGeometry" ],
+			[ "Clock", "api/core/Clock" ],
+			[ "EventDispatcher", "api/core/EventDispatcher" ],
+			[ "Face3", "api/core/Face3" ],
+			[ "Geometry", "api/core/Geometry" ],
+			[ "Object3D", "api/core/Object3D" ],
+			[ "Raycaster", "api/core/Raycaster" ],
+		],
+
+		"Lights": [
+			[ "AmbientLight", "api/lights/AmbientLight" ],
+			[ "AreaLight", "api/lights/AreaLight" ],
+			[ "DirectionalLight", "api/lights/DirectionalLight" ],
+			[ "HemisphereLight", "api/lights/HemisphereLight" ],
+			[ "Light", "api/lights/Light" ],
+			[ "PointLight", "api/lights/PointLight" ],
+			[ "SpotLight", "api/lights/SpotLight" ]
+		],
 
 
-	"Loaders": [
-		[ "Loader", "loaders/Loader" ],
-		[ "BinaryLoader", "loaders/BinaryLoader" ],
-		[ "GeometryLoader", "loaders/GeometryLoader" ],
-		[ "ImageLoader", "loaders/ImageLoader" ],
-		[ "JSONLoader", "loaders/JSONLoader" ],
-		[ "LoadingMonitor", "loaders/LoadingMonitor" ],
-		[ "SceneLoader", "loaders/SceneLoader" ],
-		[ "TextureLoader", "loaders/TextureLoader" ],
-	],
+		"Loaders": [
+			[ "BabylonLoader", "api/loaders/BabylonLoader" ],
+			[ "BufferGeometryLoader", "api/loaders/BufferGeometryLoader" ],
+			[ "Cache", "api/loaders/Cache" ],
+			[ "ColladaLoader", "api/loaders/ColladaLoader" ],
+			[ "glTFLoader", "api/loaders/glTFLoader" ],
+			[ "ImageLoader", "api/loaders/ImageLoader" ],
+			[ "JSONLoader", "api/loaders/JSONLoader" ],
+			[ "Loader", "api/loaders/Loader" ],
+			[ "LoadingManager", "api/loaders/LoadingManager" ],
+			[ "MaterialLoader", "api/loaders/MaterialLoader" ],
+			[ "MTLLoader", "api/loaders/MTLLoader" ],
+			[ "OBJLoader", "api/loaders/OBJLoader" ],
+			[ "OBJMTLLoader", "api/loaders/OBJMTLLoader" ],
+			[ "ObjectLoader", "api/loaders/ObjectLoader" ],
+			[ "PDBLoader", "api/loaders/PDBLoader" ],
+			[ "SVGLoader", "api/loaders/SVGLoader" ],
+			[ "TextureLoader", "api/loaders/TextureLoader" ],
+			[ "TGALoader", "api/loaders/TGALoader" ],
+			[ "XHRLoader", "api/loaders/XHRLoader" ]
+		],
 
-	"Materials": [
-		[ "Material", "materials/Material" ],
-		[ "LineBasicMaterial", "materials/LineBasicMaterial" ],
-		[ "MeshBasicMaterial", "materials/MeshBasicMaterial" ],
-		[ "MeshDepthMaterial", "materials/MeshDepthMaterial" ],
-		[ "MeshFaceMaterial", "materials/MeshFaceMaterial" ],
-		[ "MeshLambertMaterial", "materials/MeshLambertMaterial" ],
-		[ "MeshNormalMaterial", "materials/MeshNormalMaterial" ],
-		[ "MeshPhongMaterial", "materials/MeshPhongMaterial" ],
-		[ "ParticleBasicMaterial", "materials/ParticleBasicMaterial" ],
-		[ "ParticleCanvasMaterial", "materials/ParticleCanvasMaterial" ],
-		[ "ParticleDOMMaterial", "materials/ParticleDOMMaterial" ],
-		[ "ShaderMaterial", "materials/ShaderMaterial" ]
+		"Materials": [
+			[ "LineBasicMaterial", "api/materials/LineBasicMaterial" ],
+			[ "LineDashedMaterial", "api/materials/LineDashedMaterial" ],
+			[ "Material", "api/materials/Material" ],
+			[ "MeshBasicMaterial", "api/materials/MeshBasicMaterial" ],
+			[ "MeshDepthMaterial", "api/materials/MeshDepthMaterial" ],
+			[ "MeshFaceMaterial", "api/materials/MeshFaceMaterial" ],
+			[ "MeshLambertMaterial", "api/materials/MeshLambertMaterial" ],
+			[ "MeshNormalMaterial", "api/materials/MeshNormalMaterial" ],
+			[ "MeshPhongMaterial", "api/materials/MeshPhongMaterial" ],
+			[ "PointCloudMaterial", "api/materials/PointCloudMaterial" ],
+			[ "RawShaderMaterial", "api/materials/RawShaderMaterial" ],
+			[ "ShaderMaterial", "api/materials/ShaderMaterial" ],
+			[ "SpriteCanvasMaterial", "api/materials/SpriteCanvasMaterial" ],
+			[ "SpriteMaterial", "api/materials/SpriteMaterial" ]
+		],
 
-	],
+		"Math": [
+			[ "Box2", "api/math/Box2" ],
+			[ "Box3", "api/math/Box3" ],
+			[ "Color", "api/math/Color" ],
+			[ "Euler", "api/math/Euler" ],
+			[ "Frustum", "api/math/Frustum" ],
+			[ "Line3", "api/math/Line3" ],
+			[ "Math", "api/math/Math" ],
+			[ "Matrix3", "api/math/Matrix3" ],
+			[ "Matrix4", "api/math/Matrix4" ],
+			[ "Plane", "api/math/Plane" ],
+			[ "Quaternion", "api/math/Quaternion" ],
+			[ "Ray", "api/math/Ray" ],
+			[ "Sphere", "api/math/Sphere" ],
+			[ "Spline", "api/math/Spline" ],
+			[ "Triangle", "api/math/Triangle" ],
+			[ "Vector2", "api/math/Vector2" ],
+			[ "Vector3", "api/math/Vector3" ],
+			[ "Vector4", "api/math/Vector4" ]
+		],
 
-	"Objects": [
-		[ "Bone", "objects/Bone" ],
-		[ "Line", "objects/Line" ],
-		[ "LOD", "objects/LOD" ],
-		[ "Mesh", "objects/Mesh" ],
-		[ "MorphAnimMesh", "objects/MorphAnimMesh" ],
-		[ "Particle", "objects/Particle" ],
-		[ "ParticleSystem", "objects/ParticleSystem" ],
-		[ "Ribbon", "objects/Ribbon" ],
-		[ "SkinnedMesh", "objects/SkinnedMesh" ],
-		[ "Sprite", "objects/Sprite" ]
+		"Objects": [
+			[ "Bone", "api/objects/Bone" ],
+			[ "LensFlare", "api/objects/LensFlare" ],
+			[ "Line", "api/objects/Line" ],
+			[ "LOD", "api/objects/LOD" ],
+			[ "Mesh", "api/objects/Mesh" ],
+			[ "MorphAnimMesh", "api/objects/MorphAnimMesh" ],
+			[ "PointCloud", "api/objects/PointCloud" ],
+			[ "SkinnedMesh", "api/objects/SkinnedMesh" ],
+			[ "Sprite", "api/objects/Sprite" ]
+		],
 
-	],
+		"Renderers": [
+			[ "CanvasRenderer", "api/renderers/CanvasRenderer" ],
+			[ "WebGLRenderer", "api/renderers/WebGLRenderer" ],
+			[ "WebGLRenderTarget", "api/renderers/WebGLRenderTarget" ],
+			[ "WebGLRenderTargetCube", "api/renderers/WebGLRenderTargetCube" ]
+		],
 
-	"Renderers": [
-		[ "CanvasRenderer", "renderers/CanvasRenderer" ],
-		[ "DOMRenderer", "renderers/DOMRenderer" ],
-		[ "SVGRenderer", "renderers/SVGRenderer" ],
-		[ "WebGLRenderer", "renderers/WebGLRenderer" ],
-		[ "WebGLRenderTarget", "renderers/WebGLRenderTarget" ],
-		[ "WebGLRenderTargetCube", "renderers/WebGLRenderTargetCube" ],
-		[ "WebGLShaders", "renderers/WebGLShaders" ]
-	],
+		"Renderers / Shaders": [
+			[ "ShaderChunk", "api/renderers/shaders/ShaderChunk" ],
+			[ "ShaderLib", "api/renderers/shaders/ShaderLib" ],
+			[ "UniformsLib", "api/renderers/shaders/UniformsLib" ],
+			[ "UniformsUtils", "api/renderers/shaders/UniformsUtils" ]
+		],
 
-	"Renderers / Renderables": [
-		[ "RenderableFace3", "renderers/renderables/RenderableFace3" ],
-		[ "RenderableFace4", "renderers/renderables/RenderableFace4" ],
-		[ "RenderableLine", "renderers/renderables/RenderableLine" ],
-		[ "RenderableObject", "renderers/renderables/RenderableObject" ],
-		[ "RenderableParticle", "renderers/renderables/RenderableParticle" ],
-		[ "RenderableVertex", "renderers/renderables/RenderableVertex" ]
-	],
+		"Renderers / WebGL": [
+			[ "WebGLProgram", "api/renderers/webgl/WebGLProgram" ],
+			[ "WebGLShader", "api/renderers/webgl/WebGLShader" ]
+		],
 
-	"Scenes": [
-		[ "Fog", "scenes/Fog" ],
-		[ "FogExp2", "scenes/FogExp2" ],
-		[ "Scene", "scenes/Scene" ]
-	],
+		"Renderers / WebGL / Plugins": [
+			[ "LensFlarePlugin", "api/renderers/webgl/plugins/LensFlarePlugin" ],
+			[ "ShadowMapPlugin", "api/renderers/webgl/plugins/ShadowMapPlugin" ],
+			[ "SpritePlugin", "api/renderers/webgl/plugins/SpritePlugin" ]
+		],
 
-	"Textures": [
-		[ "DataTexture", "textures/DataTexture" ],
-		[ "Texture", "textures/Texture" ]
-	],
+		"Scenes": [
+			[ "Fog", "api/scenes/Fog" ],
+			[ "FogExp2", "api/scenes/FogExp2" ],
+			[ "Scene", "api/scenes/Scene" ]
+		],
 
-	"Extras": [
-		[ "ColorUtils", "extras/ColorUtils" ],
-		[ "GeometryUtils", "extras/GeometryUtils" ],
-		[ "ImageUtils", "extras/ImageUtils" ],
-		[ "SceneUtils", "extras/SceneUtils" ],
-		[ "ShaderUtils", "extras/ShaderUtils" ]
-	],
+		"Textures": [
+			[ "CompressedTexture", "api/textures/CompressedTexture" ],
+			[ "DataTexture", "api/textures/DataTexture" ],
+			[ "Texture", "api/textures/Texture" ]
+		],
 
-	"Extras / Animation": [
-		[ "Animation", "extras/animation/Animation" ],
-		[ "AnimationHandler", "extras/animation/AnimationHandler" ],
-		[ "AnimationMorphTarget", "extras/animation/AnimationMorphTarget" ],
-		[ "KeyFrameAnimation", "extras/animation/KeyFrameAnimation" ]
-	],
+		"Extras": [
+			[ "FontUtils", "api/extras/FontUtils" ],
+			[ "GeometryUtils", "api/extras/GeometryUtils" ],
+			[ "ImageUtils", "api/extras/ImageUtils" ],
+			[ "SceneUtils", "api/extras/SceneUtils" ]
+		],
 
-	"Extras / Cameras": [
-		[ "CombinedCamera", "extras/cameras/CombinedCamera" ],
-		[ "CubeCamera", "extras/cameras/CubeCamera" ]
-	],
+		"Extras / Animation": [
+			[ "Animation", "api/extras/animation/Animation" ],
+			[ "AnimationHandler", "api/extras/animation/AnimationHandler" ],
+			[ "KeyFrameAnimation", "api/extras/animation/KeyFrameAnimation" ],
+			[ "AnimationMorphTarget", "api/extras/animation/AnimationMorphTarget" ]
+		],
 
-	"Extras / Controls": [
-		[ "FirstPersonControls", "extras/controls/FirstPersonControls" ],
-		[ "FlyControls", "extras/controls/FlyControls" ],
-		[ "PathControls", "extras/controls/PathControls" ],
-		[ "RollControls", "extras/controls/RollControls" ],
-		[ "TrackballControls", "extras/controls/TrackballControls" ]
-	],
+		"Extras / Core": [
+			[ "Curve", "api/extras/core/Curve" ],
+			[ "CurvePath", "api/extras/core/CurvePath" ],
+			[ "Gyroscope", "api/extras/core/Gyroscope" ],
+			[ "Path", "api/extras/core/Path" ],
+			[ "Shape", "api/extras/core/Shape" ]
+		],
 
-	"Extras / Core": [
-		[ "BufferGeometry", "extras/core/BufferGeometry" ],
-		[ "Curve", "extras/core/Curve" ],
-		[ "CurvePath", "extras/core/CurvePath" ],
-		[ "EventTarget", "extras/core/EventTarget" ],
-		[ "Gyroscope", "extras/core/Gyroscope" ],
-		[ "Path", "extras/core/Path" ],
-		[ "Shape", "extras/core/Shape" ],
-		[ "TextPath", "extras/core/TextPath" ]
-	],
+		"Extras / Curves": [
+			[ "ArcCurve", "api/extras/curves/ArcCurve" ],
+			[ "ClosedSplineCurve3", "api/extras/curves/ClosedSplineCurve3" ],
+			[ "CubicBezierCurve", "api/extras/curves/CubicBezierCurve" ],
+			[ "CubicBezierCurve3", "api/extras/curves/CubicBezierCurve3" ],
+			[ "EllipseCurve", "api/extras/curves/EllipseCurve" ],
+			[ "LineCurve", "api/extras/curves/LineCurve" ],
+			[ "LineCurve3", "api/extras/curves/LineCurve3" ],
+			[ "QuadraticBezierCurve", "api/extras/curves/QuadraticBezierCurve" ],
+			[ "QuadraticBezierCurve3", "api/extras/curves/QuadraticBezierCurve3" ],
+			[ "SplineCurve", "api/extras/curves/SplineCurve" ],
+			[ "SplineCurve3", "api/extras/curves/SplineCurve3" ]
+		],
 
-	"Extras / Geometries": [
-		[ "CubeGeometry", "extras/geometries/CubeGeometry" ],
-		[ "CylinderGeometry", "extras/geometries/CylinderGeometry" ],
-		[ "ExtrudeGeometry", "extras/geometries/ExtrudeGeometry" ],
-		[ "IcosahedronGeometry", "extras/geometries/IcosahedronGeometry" ],
-		[ "LatheGeometry", "extras/geometries/LatheGeometry" ],
-		[ "OctahedronGeometry", "extras/geometries/OctahedronGeometry" ],
-		[ "PlaneGeometry", "extras/geometries/PlaneGeometry" ],
-		[ "PolyhedronGeometry", "extras/geometries/PolyhedronGeometry" ],
-		[ "SphereGeometry", "extras/geometries/SphereGeometry" ],
-		[ "TetrahedronGeometry", "extras/geometries/TetrahedronGeometry" ],
-		[ "TextGeometry", "extras/geometries/TextGeometry" ],
-		[ "TorusGeometry", "extras/geometries/TorusGeometry" ],
-		[ "TorusKnotGeometry", "extras/geometries/TorusKnotGeometry" ]
-	],
+		"Extras / Geometries": [
+			[ "BoxGeometry", "api/extras/geometries/BoxGeometry" ],
+			[ "CircleGeometry", "api/extras/geometries/CircleGeometry" ],
+			[ "CubeGeometry", "api/extras/geometries/CubeGeometry" ],
+			[ "CylinderGeometry", "api/extras/geometries/CylinderGeometry" ],
+			[ "DodecahedronGeometry", "api/extras/geometries/DodecahedronGeometry" ],
+			[ "ExtrudeGeometry", "api/extras/geometries/ExtrudeGeometry" ],
+			[ "IcosahedronGeometry", "api/extras/geometries/IcosahedronGeometry" ],
+			[ "LatheGeometry", "api/extras/geometries/LatheGeometry" ],
+			[ "OctahedronGeometry", "api/extras/geometries/OctahedronGeometry" ],
+			[ "ParametricGeometry", "api/extras/geometries/ParametricGeometry" ],
+			[ "PlaneGeometry", "api/extras/geometries/PlaneGeometry" ],
+			[ "PolyhedronGeometry", "api/extras/geometries/PolyhedronGeometry" ],
+			[ "RingGeometry", "api/extras/geometries/RingGeometry" ],
+			[ "ShapeGeometry", "api/extras/geometries/ShapeGeometry" ],
+			[ "SphereGeometry", "api/extras/geometries/SphereGeometry" ],
+			[ "TetrahedronGeometry", "api/extras/geometries/TetrahedronGeometry" ],
+			[ "TextGeometry", "api/extras/geometries/TextGeometry" ],
+			[ "TorusGeometry", "api/extras/geometries/TorusGeometry" ],
+			[ "TorusKnotGeometry", "api/extras/geometries/TorusKnotGeometry" ],
+			[ "TubeGeometry", "api/extras/geometries/TubeGeometry" ]
+		],
 
-	"Extras / Helpers": [
-		[ "AxisHelper", "extras/helpers/AxisHelper" ],
-		[ "CameraHelper", "extras/helpers/CameraHelper" ]
-	],
+		"Extras / Helpers": [
+			[ "ArrowHelper", "api/extras/helpers/ArrowHelper" ],
+			[ "AxisHelper", "api/extras/helpers/AxisHelper" ],
+			[ "BoundingBoxHelper", "api/extras/helpers/BoundingBoxHelper" ],
+			[ "BoxHelper", "api/extras/helpers/BoxHelper" ],
+			[ "CameraHelper", "api/extras/helpers/CameraHelper" ],
+			[ "DirectionalLightHelper", "api/extras/helpers/DirectionalLightHelper" ],
+			[ "EdgesHelper", "api/extras/helpers/EdgesHelper" ],
+			[ "FaceNormalsHelper", "api/extras/helpers/FaceNormalsHelper" ],
+			[ "GridHelper", "api/extras/helpers/GridHelper" ],
+			[ "HemisphereLightHelper", "api/extras/helpers/HemisphereLightHelper" ],
+			[ "PointLightHelper", "api/extras/helpers/PointLightHelper" ],
+			[ "SpotLightHelper", "api/extras/helpers/SpotLightHelper" ],
+			[ "VertexNormalsHelper", "api/extras/helpers/VertexNormalsHelper" ],
+			[ "VertexTangentsHelper", "api/extras/helpers/VertexTangentsHelper" ],
+			[ "WireframeHelper", "api/extras/helpers/WireframeHelper" ]
+		],
 
-	"Extras / Modifiers": [
-		[ "SubdivisionModifier", "extras/modifiers/SubdivisionModifier" ]
-	],
+		"Extras / Objects": [
+			[ "ImmediateRenderObject", "api/extras/objects/ImmediateRenderObject" ],
+			[ "MorphBlendMesh", "api/extras/objects/MorphBlendMesh" ]
+		],
 
-	"Extras / Objects": [
-		[ "LensFlare", "extras/objects/LensFlare" ],
-		[ "MarchingCubes", "extras/objects/MarchingCubes" ]
-	],
+		"Examples" : [
+			[ "CombinedCamera", "api/examples/cameras/CombinedCamera" ],
+			[ "LookupTable", "api/examples/Lut" ]
 
-	"Extras / Renderers / Effects": [
-		[ "AnaglyphEffect", "extras/renderers/effects/AnaglyphEffect" ],
-		[ "CrosseyedEffect", "extras/renderers/effects/CrosseyedEffect" ],
-		[ "ParallaxBarrierEffect", "extras/renderers/effects/ParallaxBarrierEffect" ],
-		[ "StereoEffect", "extras/renderers/effects/StereoEffect" ]
-	],
+		]
 
-	"Extras / Renderers / Plugins": [
-		[ "LensFlarePlugin", "extras/renderers/plugins/LensFlarePlugin" ],
-		[ "ShadowMapPlugin", "extras/renderers/plugins/ShadowMapPlugin" ],
-		[ "SpritePlugin", "extras/renderers/plugins/SpritePlugin" ]
-	],
-
-	"Extras / Shaders": [
-		[ "ShaderFlares", "extras/shaders/ShaderFlares" ],
-		[ "ShaderSprite", "extras/shaders/ShaderSprite" ]
-	]
+	}
 
 };
 
 var pages = {};
 
-for ( var category in list ) {
+for ( var section in list ) {
 
-	for ( var i = 0; i < list[ category ].length; i ++ ) {
+	pages[ section ] = {};
 
-		var page = list[ category ][ i ];
-		pages[ page[ 0 ] ] = page[ 1 ];
+	for ( var category in list[ section ] ) {
+
+		pages[ section ][ category ] = {};
+
+		for ( var i = 0; i < list[ section ][ category ].length; i ++ ) {
+
+			var page = list[ section ][ category ][ i ];
+			pages[ section ][ category ][ page[ 0 ] ] = page[ 1 ];
+
+		}
 
 	}
 

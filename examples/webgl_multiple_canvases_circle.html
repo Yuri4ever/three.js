@@ -128,7 +128,7 @@
     </div>
   </div>
 
-	<div id="info"><a href="http://github.com/mrdoob/three.js" target="_blank">three.js</a> webgl - multiple canvases - circle</div>
+	<div id="info"><a href="http://threejs.org" target="_blank">three.js</a> webgl - multiple canvases - circle</div>
   <div id="help" gstyle="display: none">
     <div>
     This example is shows how to setup multi-monitor displays like <a href="http://code.google.com/p/liquid-galaxy/">Google's Liquid Galaxy using three.js</a>.
@@ -203,7 +203,7 @@
 					container = document.getElementById( containerId );
 
 					camera = new THREE.PerspectiveCamera( 20, container.clientWidth / container.clientHeight, 1, 20000 );
-					camera.rotation.setY( rotateY );
+					camera.rotation.y = rotateY;
 
 					// Think of the virtual camera as a post with 5 cameras on it (even though those cameras happen to live in difference scenes)
 					// You need to move the post (ie, the virtualCamera) to move all 5 cameras together.
@@ -222,8 +222,25 @@
 
 					var noof_balls = 51;
 
-					var shadowMaterial = new THREE.MeshBasicMaterial( { map: THREE.ImageUtils.loadTexture( 'textures/shadow.png' ) } );
-					var shadowGeo = new THREE.PlaneGeometry( 300, 300, 1, 1 );
+					// shadow
+
+					var canvas = document.createElement( 'canvas' );
+					canvas.width = 128;
+					canvas.height = 128;
+
+					var context = canvas.getContext( '2d' );
+					var gradient = context.createRadialGradient( canvas.width / 2, canvas.height / 2, 0, canvas.width / 2, canvas.height / 2, canvas.width / 2 );
+					gradient.addColorStop( 0.1, 'rgba(210,210,210,1)' );
+					gradient.addColorStop( 1, 'rgba(255,255,255,1)' );
+
+					context.fillStyle = gradient;
+					context.fillRect( 0, 0, canvas.width, canvas.height );
+
+					var shadowTexture = new THREE.Texture( canvas );
+					shadowTexture.needsUpdate = true;
+
+					var shadowMaterial = new THREE.MeshBasicMaterial( { map: shadowTexture } );
+					var shadowGeo = new THREE.PlaneBufferGeometry( 300, 300, 1, 1 );
 
 					for ( var i = 0; i < noof_balls; i ++ ) { // create shadows
 
@@ -255,12 +272,12 @@
 							p = geometry1.vertices[ vertexIndex ];
 
 							color = new THREE.Color( 0xffffff );
-							color.setHSV( ( p.y / radius + 1 ) / 2, 1.0, 1.0 );
+							color.setHSL( ( p.y / radius + 1 ) / 2, 1.0, 0.5 );
 
 							f1.vertexColors[ j ] = color;
 
 							color = new THREE.Color( 0xffffff );
-							color.setHSV( 0.0, ( p.y / radius + 1 ) / 2, 1.0 );
+							color.setHSL( 0.0, ( p.y / radius + 1 ) / 2, 0.5 );
 
 						}
 
@@ -285,8 +302,9 @@
 					}
 
 					renderer = new THREE.WebGLRenderer( { antialias: true } );
+					renderer.setClearColor( 0xffffff );
+					renderer.setPixelRatio( window.devicePixelRatio );
 					renderer.setSize( container.clientWidth, container.clientHeight );
-
 					container.appendChild( renderer.domElement );
 
 					document.addEventListener( 'mousemove', onDocumentMouseMove, false );

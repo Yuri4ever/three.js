@@ -11,6 +11,8 @@
  *
  *  specularMap: new THREE.Texture( <Image> ),
  *
+ *  alphaMap: new THREE.Texture( <Image> ),
+ *
  *  envMap: new THREE.TextureCube( [posx, negx, posy, negy, posz, negz] ),
  *  combine: THREE.Multiply,
  *  reflectivity: <float>,
@@ -19,6 +21,7 @@
  *  shading: THREE.SmoothShading,
  *  blending: THREE.NormalBlending,
  *  depthTest: <bool>,
+ *  depthWrite: <bool>,
  *
  *  wireframe: <boolean>,
  *  wireframeLinewidth: <float>,
@@ -36,6 +39,8 @@ THREE.MeshBasicMaterial = function ( parameters ) {
 
 	THREE.Material.call( this );
 
+	this.type = 'MeshBasicMaterial';
+
 	this.color = new THREE.Color( 0xffffff ); // emissive
 
 	this.map = null;
@@ -43,6 +48,8 @@ THREE.MeshBasicMaterial = function ( parameters ) {
 	this.lightMap = null;
 
 	this.specularMap = null;
+
+	this.alphaMap = null;
 
 	this.envMap = null;
 	this.combine = THREE.MultiplyOperation;
@@ -68,6 +75,7 @@ THREE.MeshBasicMaterial = function ( parameters ) {
 };
 
 THREE.MeshBasicMaterial.prototype = Object.create( THREE.Material.prototype );
+THREE.MeshBasicMaterial.prototype.constructor = THREE.MeshBasicMaterial;
 
 THREE.MeshBasicMaterial.prototype.clone = function () {
 
@@ -82,6 +90,8 @@ THREE.MeshBasicMaterial.prototype.clone = function () {
 	material.lightMap = this.lightMap;
 
 	material.specularMap = this.specularMap;
+
+	material.alphaMap = this.alphaMap;
 
 	material.envMap = this.envMap;
 	material.combine = this.combine;

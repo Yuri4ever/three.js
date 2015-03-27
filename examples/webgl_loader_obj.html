@@ -27,18 +27,15 @@
 
 	<body>
 		<div id="info">
-		<a href="http://github.com/mrdoob/three.js" target="_blank">three.js</a> - OBJLoader test
+		<a href="http://threejs.org" target="_blank">three.js</a> - OBJLoader test
 		</div>
 
 		<script src="../build/three.min.js"></script>
 		<script src="js/loaders/OBJLoader.js"></script>
 
-		<script src="js/Detector.js"></script>
-		<script src="js/Stats.js"></script>
-
 		<script>
 
-			var container, stats;
+			var container;
 
 			var camera, scene, renderer;
 
@@ -68,44 +65,63 @@
 				scene.add( ambient );
 
 				var directionalLight = new THREE.DirectionalLight( 0xffeedd );
-				directionalLight.position.set( 0, 0, 1 ).normalize();
+				directionalLight.position.set( 0, 0, 1 );
 				scene.add( directionalLight );
 
 				// texture
 
+				var manager = new THREE.LoadingManager();
+				manager.onProgress = function ( item, loaded, total ) {
+
+					console.log( item, loaded, total );
+
+				};
+
 				var texture = new THREE.Texture();
 
-				var loader = new THREE.ImageLoader();
-				loader.addEventListener( 'load', function ( event ) {
+				var onProgress = function ( xhr ) {
+					if ( xhr.lengthComputable ) {
+						var percentComplete = xhr.loaded / xhr.total * 100;
+						console.log( Math.round(percentComplete, 2) + '% downloaded' );
+					}
+				};
 
-					texture.image = event.content;
+				var onError = function ( xhr ) {
+				};
+
+
+				var loader = new THREE.ImageLoader( manager );
+				loader.load( 'textures/UV_Grid_Sm.jpg', function ( image ) {
+
+					texture.image = image;
 					texture.needsUpdate = true;
 
 				} );
-				loader.load( 'textures/ash_uvgrid01.jpg' );
 
 				// model
 
-				var loader = new THREE.OBJLoader();
-				loader.addEventListener( 'load', function ( event ) {
+				var loader = new THREE.OBJLoader( manager );
+				loader.load( 'obj/male02/male02.obj', function ( object ) {
 
-					var object = event.content;
+					object.traverse( function ( child ) {
 
-					for ( var i = 0, l = object.children.length; i < l; i ++ ) {
+						if ( child instanceof THREE.Mesh ) {
 
-						object.children[ i ].material.map = texture;
+							child.material.map = texture;
 
-					}
+						}
+
+					} );
 
 					object.position.y = - 80;
 					scene.add( object );
 
-				});
-				loader.load( 'obj/male02/male02.obj' );
+				}, onProgress, onError );
 
 				//
 
 				renderer = new THREE.WebGLRenderer();
+				renderer.setPixelRatio( window.devicePixelRatio );
 				renderer.setSize( window.innerWidth, window.innerHeight );
 				container.appendChild( renderer.domElement );
 

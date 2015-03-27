@@ -1,70 +1,74 @@
 /**
  * @author mikael emtinger / http://gomo.se/
+ * @author alteredq / http://alteredqualia.com/
  */
 
-THREE.Sprite = function ( parameters ) {
+THREE.Sprite = ( function () {
 
-	THREE.Object3D.call( this );
+	var indices = new Uint16Array( [ 0, 1, 2,  0, 2, 3 ] );
+	var vertices = new Float32Array( [ - 0.5, - 0.5, 0,   0.5, - 0.5, 0,   0.5, 0.5, 0,   - 0.5, 0.5, 0 ] );
+	var uvs = new Float32Array( [ 0, 0,   1, 0,   1, 1,   0, 1 ] );
 
-	this.color = ( parameters.color !== undefined ) ? new THREE.Color( parameters.color ) : new THREE.Color( 0xffffff );
-	this.map = ( parameters.map !== undefined ) ? parameters.map : new THREE.Texture();
+	var geometry = new THREE.BufferGeometry();
+	geometry.addAttribute( 'index', new THREE.BufferAttribute( indices, 1 ) );
+	geometry.addAttribute( 'position', new THREE.BufferAttribute( vertices, 3 ) );
+	geometry.addAttribute( 'uv', new THREE.BufferAttribute( uvs, 2 ) );
 
-	this.blending = ( parameters.blending !== undefined ) ? parameters.blending : THREE.NormalBlending;
+	return function ( material ) {
 
-	this.blendSrc = parameters.blendSrc !== undefined ? parameters.blendSrc : THREE.SrcAlphaFactor;
-	this.blendDst = parameters.blendDst !== undefined ? parameters.blendDst : THREE.OneMinusSrcAlphaFactor;
-	this.blendEquation = parameters.blendEquation !== undefined ? parameters.blendEquation : THREE.AddEquation;
+		THREE.Object3D.call( this );
 
-	this.useScreenCoordinates = ( parameters.useScreenCoordinates !== undefined ) ? parameters.useScreenCoordinates : true;
-	this.mergeWith3D = ( parameters.mergeWith3D !== undefined ) ? parameters.mergeWith3D : !this.useScreenCoordinates;
-	this.affectedByDistance = ( parameters.affectedByDistance !== undefined ) ? parameters.affectedByDistance : !this.useScreenCoordinates;
-	this.scaleByViewport = ( parameters.scaleByViewport !== undefined ) ? parameters.scaleByViewport : !this.affectedByDistance;
-	this.alignment = ( parameters.alignment instanceof THREE.Vector2 ) ? parameters.alignment : THREE.SpriteAlignment.center;
+		this.type = 'Sprite';
 
-	this.rotation3d = this.rotation;
-	this.rotation = 0;
-	this.opacity = 1;
+		this.geometry = geometry;
+		this.material = ( material !== undefined ) ? material : new THREE.SpriteMaterial();
 
-	this.uvOffset = new THREE.Vector2( 0, 0 );
-	this.uvScale  = new THREE.Vector2( 1, 1 );
+	};
 
-};
+} )();
 
 THREE.Sprite.prototype = Object.create( THREE.Object3D.prototype );
+THREE.Sprite.prototype.constructor = THREE.Sprite;
 
-/*
- * Custom update matrix
- */
+THREE.Sprite.prototype.raycast = ( function () {
 
-THREE.Sprite.prototype.updateMatrix = function () {
+	var matrixPosition = new THREE.Vector3();
 
-	this.matrix.setPosition( this.position );
+	return function ( raycaster, intersects ) {
 
-	this.rotation3d.set( 0, 0, this.rotation );
-	this.matrix.setRotationFromEuler( this.rotation3d );
+		matrixPosition.setFromMatrixPosition( this.matrixWorld );
 
-	if ( this.scale.x !== 1 || this.scale.y !== 1 ) {
+		var distance = raycaster.ray.distanceToPoint( matrixPosition );
 
-		this.matrix.scale( this.scale );
-		this.boundRadiusScale = Math.max( this.scale.x, this.scale.y );
+		if ( distance > this.scale.x ) {
 
-	}
+			return;
 
-	this.matrixWorldNeedsUpdate = true;
+		}
+
+		intersects.push( {
+
+			distance: distance,
+			point: this.position,
+			face: null,
+			object: this
+
+		} );
+
+	};
+
+}() );
+
+THREE.Sprite.prototype.clone = function ( object ) {
+
+	if ( object === undefined ) object = new THREE.Sprite( this.material );
+
+	THREE.Object3D.prototype.clone.call( this, object );
+
+	return object;
 
 };
 
-/*
- * Alignment
- */
+// Backwards compatibility
 
-THREE.SpriteAlignment = {};
-THREE.SpriteAlignment.topLeft = new THREE.Vector2( 1, -1 );
-THREE.SpriteAlignment.topCenter = new THREE.Vector2( 0, -1 );
-THREE.SpriteAlignment.topRight = new THREE.Vector2( -1, -1 );
-THREE.SpriteAlignment.centerLeft = new THREE.Vector2( 1, 0 );
-THREE.SpriteAlignment.center = new THREE.Vector2( 0, 0 );
-THREE.SpriteAlignment.centerRight = new THREE.Vector2( -1, 0 );
-THREE.SpriteAlignment.bottomLeft = new THREE.Vector2( 1, 1 );
-THREE.SpriteAlignment.bottomCenter = new THREE.Vector2( 0, 1 );
-THREE.SpriteAlignment.bottomRight = new THREE.Vector2( -1, 1 );
+THREE.Particle = THREE.Sprite;

@@ -2,11 +2,26 @@
  * @author mrdoob / http://mrdoob.com/
  */
 
-THREE.SphereGeometry = function ( radius, segmentsWidth, segmentsHeight, phiStart, phiLength, thetaStart, thetaLength ) {
+THREE.SphereGeometry = function ( radius, widthSegments, heightSegments, phiStart, phiLength, thetaStart, thetaLength ) {
 
 	THREE.Geometry.call( this );
 
+	this.type = 'SphereGeometry';
+
+	this.parameters = {
+		radius: radius,
+		widthSegments: widthSegments,
+		heightSegments: heightSegments,
+		phiStart: phiStart,
+		phiLength: phiLength,
+		thetaStart: thetaStart,
+		thetaLength: thetaLength 
+	};
+
 	radius = radius || 50;
+
+	widthSegments = Math.max( 3, Math.floor( widthSegments ) || 8 );
+	heightSegments = Math.max( 2, Math.floor( heightSegments ) || 6 );
 
 	phiStart = phiStart !== undefined ? phiStart : 0;
 	phiLength = phiLength !== undefined ? phiLength : Math.PI * 2;
@@ -14,20 +29,17 @@ THREE.SphereGeometry = function ( radius, segmentsWidth, segmentsHeight, phiStar
 	thetaStart = thetaStart !== undefined ? thetaStart : 0;
 	thetaLength = thetaLength !== undefined ? thetaLength : Math.PI;
 
-	var segmentsX = Math.max( 3, Math.floor( segmentsWidth ) || 8 );
-	var segmentsY = Math.max( 2, Math.floor( segmentsHeight ) || 6 );
-
 	var x, y, vertices = [], uvs = [];
 
-	for ( y = 0; y <= segmentsY; y ++ ) {
+	for ( y = 0; y <= heightSegments; y ++ ) {
 
 		var verticesRow = [];
 		var uvsRow = [];
 
-		for ( x = 0; x <= segmentsX; x ++ ) {
+		for ( x = 0; x <= widthSegments; x ++ ) {
 
-			var u = x / segmentsX;
-			var v = y / segmentsY;
+			var u = x / widthSegments;
+			var v = y / heightSegments;
 
 			var vertex = new THREE.Vector3();
 			vertex.x = - radius * Math.cos( phiStart + u * phiLength ) * Math.sin( thetaStart + v * thetaLength );
@@ -37,7 +49,7 @@ THREE.SphereGeometry = function ( radius, segmentsWidth, segmentsHeight, phiStar
 			this.vertices.push( vertex );
 
 			verticesRow.push( this.vertices.length - 1 );
-			uvsRow.push( new THREE.UV( u, 1 - v ) );
+			uvsRow.push( new THREE.Vector2( u, 1 - v ) );
 
 		}
 
@@ -46,9 +58,9 @@ THREE.SphereGeometry = function ( radius, segmentsWidth, segmentsHeight, phiStar
 
 	}
 
-	for ( y = 0; y < segmentsY; y ++ ) {
+	for ( y = 0; y < heightSegments; y ++ ) {
 
-		for ( x = 0; x < segmentsX; x ++ ) {
+		for ( x = 0; x < widthSegments; x ++ ) {
 
 			var v1 = vertices[ y ][ x + 1 ];
 			var v2 = vertices[ y ][ x ];
@@ -65,20 +77,25 @@ THREE.SphereGeometry = function ( radius, segmentsWidth, segmentsHeight, phiStar
 			var uv3 = uvs[ y + 1 ][ x ].clone();
 			var uv4 = uvs[ y + 1 ][ x + 1 ].clone();
 
-			if ( Math.abs( this.vertices[ v1 ].y ) == radius ) {
+			if ( Math.abs( this.vertices[ v1 ].y ) === radius ) {
 
+				uv1.x = ( uv1.x + uv2.x ) / 2;
 				this.faces.push( new THREE.Face3( v1, v3, v4, [ n1, n3, n4 ] ) );
 				this.faceVertexUvs[ 0 ].push( [ uv1, uv3, uv4 ] );
 
-			} else if ( Math.abs( this.vertices[ v3 ].y ) ==  radius ) {
+			} else if ( Math.abs( this.vertices[ v3 ].y ) === radius ) {
 
+				uv3.x = ( uv3.x + uv4.x ) / 2;
 				this.faces.push( new THREE.Face3( v1, v2, v3, [ n1, n2, n3 ] ) );
 				this.faceVertexUvs[ 0 ].push( [ uv1, uv2, uv3 ] );
 
 			} else {
 
-				this.faces.push( new THREE.Face4( v1, v2, v3, v4, [ n1, n2, n3, n4 ] ) );
-				this.faceVertexUvs[ 0 ].push( [ uv1, uv2, uv3, uv4 ] );
+				this.faces.push( new THREE.Face3( v1, v2, v4, [ n1, n2, n4 ] ) );
+				this.faceVertexUvs[ 0 ].push( [ uv1, uv2, uv4 ] );
+
+				this.faces.push( new THREE.Face3( v2, v3, v4, [ n2.clone(), n3, n4.clone() ] ) );
+				this.faceVertexUvs[ 0 ].push( [ uv2.clone(), uv3, uv4.clone() ] );
 
 			}
 
@@ -86,11 +103,11 @@ THREE.SphereGeometry = function ( radius, segmentsWidth, segmentsHeight, phiStar
 
 	}
 
-	this.computeCentroids();
 	this.computeFaceNormals();
 
-	this.boundingSphere = { radius: radius };
+	this.boundingSphere = new THREE.Sphere( new THREE.Vector3(), radius );
 
 };
 
 THREE.SphereGeometry.prototype = Object.create( THREE.Geometry.prototype );
+THREE.SphereGeometry.prototype.constructor = THREE.SphereGeometry;

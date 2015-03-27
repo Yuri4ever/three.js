@@ -32,8 +32,8 @@ THREE.ParallaxBarrierEffect = function ( renderer ) {
 
 		uniforms: {
 
-			"mapLeft": { type: "t", value: 0, texture: _renderTargetL },
-			"mapRight": { type: "t", value: 1, texture: _renderTargetR }
+			"mapLeft": { type: "t", value: _renderTargetL },
+			"mapRight": { type: "t", value: _renderTargetR }
 
 		},
 
@@ -60,7 +60,7 @@ THREE.ParallaxBarrierEffect = function ( renderer ) {
 
 			"	vec2 uv = vUv;",
 
-			"	if ( ( mod( gl_FragCoord.x, 2.0 ) ) > 1.00 ) {",
+			"	if ( ( mod( gl_FragCoord.y, 2.0 ) ) > 1.00 ) {",
 
 			"		gl_FragColor = texture2D( mapLeft, uv );",
 
@@ -76,7 +76,7 @@ THREE.ParallaxBarrierEffect = function ( renderer ) {
 
 	} );
 
-	var mesh = new THREE.Mesh( new THREE.PlaneGeometry( 2, 2 ), _material );
+	var mesh = new THREE.Mesh( new THREE.PlaneBufferGeometry( 2, 2 ), _material );
 	_scene.add( mesh );
 
 	this.setSize = function ( width, height ) {
@@ -84,8 +84,8 @@ THREE.ParallaxBarrierEffect = function ( renderer ) {
 		_renderTargetL = new THREE.WebGLRenderTarget( width, height, _params );
 		_renderTargetR = new THREE.WebGLRenderTarget( width, height, _params );
 
-		_material.uniforms[ "mapLeft" ].texture = _renderTargetL;
-		_material.uniforms[ "mapRight" ].texture = _renderTargetR;
+		_material.uniforms[ "mapLeft" ].value = _renderTargetL;
+		_material.uniforms[ "mapRight" ].value = _renderTargetR;
 
 		renderer.setSize( width, height );
 
@@ -118,7 +118,7 @@ THREE.ParallaxBarrierEffect = function ( renderer ) {
 			var projectionMatrix = camera.projectionMatrix.clone();
 			var eyeSep = focalLength / 30 * 0.5;
 			var eyeSepOnProjection = eyeSep * _near / focalLength;
-			var ymax = _near * Math.tan( _fov * Math.PI / 360 );
+			var ymax = _near * Math.tan( THREE.Math.degToRad( _fov * 0.5 ) );
 			var xmin, xmax;
 
 			// translate xOffset
@@ -148,14 +148,14 @@ THREE.ParallaxBarrierEffect = function ( renderer ) {
 
 		}
 
-		_cameraL.matrixWorld.copy( camera.matrixWorld ).multiplySelf( eyeLeft );
+		_cameraL.matrixWorld.copy( camera.matrixWorld ).multiply( eyeLeft );
 		_cameraL.position.copy( camera.position );
 		_cameraL.near = camera.near;
 		_cameraL.far = camera.far;
 
 		renderer.render( scene, _cameraL, _renderTargetL, true );
 
-		_cameraR.matrixWorld.copy( camera.matrixWorld ).multiplySelf( eyeRight );
+		_cameraR.matrixWorld.copy( camera.matrixWorld ).multiply( eyeRight );
 		_cameraR.position.copy( camera.position );
 		_cameraR.near = camera.near;
 		_cameraR.far = camera.far;

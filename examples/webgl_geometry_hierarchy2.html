@@ -17,7 +17,7 @@
 	<body>
 
 		<script src="../build/three.min.js"></script>
-		<script src="js/Stats.js"></script>
+		<script src="js/libs/stats.min.js"></script>
 
 		<script>
 
@@ -47,7 +47,7 @@
 
 				scene = new THREE.Scene();
 
-				var geometry = new THREE.CubeGeometry( 100, 100, 100 );
+				var geometry = new THREE.BoxGeometry( 100, 100, 100 );
 				var material = new THREE.MeshNormalMaterial();
 
 				root = new THREE.Mesh( geometry, material );
@@ -127,6 +127,8 @@
 				}
 
 				renderer = new THREE.WebGLRenderer();
+				renderer.setClearColor( 0xffffff );
+				renderer.setPixelRatio( window.devicePixelRatio );
 				renderer.setSize( window.innerWidth, window.innerHeight );
 				renderer.sortObjects = false;
 				container.appendChild( renderer.domElement );
@@ -177,16 +179,16 @@
 
 				var time = Date.now() * 0.001;
 
-				var rx = Math.sin( time * 0.7 ) * 0.2,
-					ry = Math.sin( time * 0.3 ) * 0.1,
-					rz = Math.sin( time * 0.2 ) * 0.1;
+				var rx = Math.sin( time * 0.7 ) * 0.2;
+				var ry = Math.sin( time * 0.3 ) * 0.1;
+				var rz = Math.sin( time * 0.2 ) * 0.1;
 
 				camera.position.x += ( mouseX - camera.position.x ) * .05;
 				camera.position.y += ( - mouseY - camera.position.y ) * .05;
 
 				camera.lookAt( scene.position );
 
-				THREE.SceneUtils.traverseHierarchy( root, function ( object ) {
+				root.traverse( function ( object ) {
 
 					object.rotation.x = rx;
 					object.rotation.y = ry;

@@ -3,49 +3,31 @@
  * @author mrdoob / http://mrdoob.com/
  */
 
-THREE.AxisHelper = function () {
+THREE.AxisHelper = function ( size ) {
 
-	THREE.Object3D.call( this );
+	size = size || 1;
 
-	var lineGeometry = new THREE.Geometry();
-	lineGeometry.vertices.push( new THREE.Vector3() );
-	lineGeometry.vertices.push( new THREE.Vector3( 0, 100, 0 ) );
+	var vertices = new Float32Array( [
+		0, 0, 0,  size, 0, 0,
+		0, 0, 0,  0, size, 0,
+		0, 0, 0,  0, 0, size
+	] );
 
-	var coneGeometry = new THREE.CylinderGeometry( 0, 5, 25, 5, 1 );
+	var colors = new Float32Array( [
+		1, 0, 0,  1, 0.6, 0,
+		0, 1, 0,  0.6, 1, 0,
+		0, 0, 1,  0, 0.6, 1
+	] );
 
-	var line, cone;
+	var geometry = new THREE.BufferGeometry();
+	geometry.addAttribute( 'position', new THREE.BufferAttribute( vertices, 3 ) );
+	geometry.addAttribute( 'color', new THREE.BufferAttribute( colors, 3 ) );
 
-	// x
+	var material = new THREE.LineBasicMaterial( { vertexColors: THREE.VertexColors } );
 
-	line = new THREE.Line( lineGeometry, new THREE.LineBasicMaterial( { color : 0xff0000 } ) );
-	line.rotation.z = - Math.PI / 2;
-	this.add( line );
-
-	cone = new THREE.Mesh( coneGeometry, new THREE.MeshBasicMaterial( { color : 0xff0000 } ) );
-	cone.position.x = 100;
-	cone.rotation.z = - Math.PI / 2;
-	this.add( cone );
-
-	// y
-
-	line = new THREE.Line( lineGeometry, new THREE.LineBasicMaterial( { color : 0x00ff00 } ) );
-	this.add( line );
-
-	cone = new THREE.Mesh( coneGeometry, new THREE.MeshBasicMaterial( { color : 0x00ff00 } ) );
-	cone.position.y = 100;
-	this.add( cone );
-
-	// z
-
-	line = new THREE.Line( lineGeometry, new THREE.LineBasicMaterial( { color : 0x0000ff } ) );
-	line.rotation.x = Math.PI / 2;
-	this.add( line );
-
-	cone = new THREE.Mesh( coneGeometry, new THREE.MeshBasicMaterial( { color : 0x0000ff } ) );
-	cone.position.z = 100;
-	cone.rotation.x = Math.PI / 2;
-	this.add( cone );
+	THREE.Line.call( this, geometry, material, THREE.LinePieces );
 
 };
 
-THREE.AxisHelper.prototype = Object.create( THREE.Object3D.prototype );
+THREE.AxisHelper.prototype = Object.create( THREE.Line.prototype );
+THREE.AxisHelper.prototype.constructor = THREE.AxisHelper;

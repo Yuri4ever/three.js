@@ -4,7 +4,10 @@
 
 THREE.SavePass = function ( renderTarget ) {
 
-	var shader = THREE.ShaderExtras[ "screen" ];
+	if ( THREE.CopyShader === undefined )
+		console.error( "THREE.SavePass relies on THREE.CopyShader" );
+
+	var shader = THREE.CopyShader;
 
 	this.textureID = "tDiffuse";
 
@@ -31,6 +34,13 @@ THREE.SavePass = function ( renderTarget ) {
 	this.needsSwap = false;
 	this.clear = false;
 
+
+	this.camera = new THREE.OrthographicCamera( -1, 1, 1, -1, 0, 1 );
+	this.scene  = new THREE.Scene();
+
+	this.quad = new THREE.Mesh( new THREE.PlaneBufferGeometry( 2, 2 ), null );
+	this.scene.add( this.quad );
+
 };
 
 THREE.SavePass.prototype = {
@@ -39,13 +49,13 @@ THREE.SavePass.prototype = {
 
 		if ( this.uniforms[ this.textureID ] ) {
 
-			this.uniforms[ this.textureID ].texture = readBuffer;
+			this.uniforms[ this.textureID ].value = readBuffer;
 
 		}
 
-		THREE.EffectComposer.quad.material = this.material;
+		this.quad.material = this.material;
 
-		renderer.render( THREE.EffectComposer.scene, THREE.EffectComposer.camera, this.renderTarget, this.clear );
+		renderer.render( this.scene, this.camera, this.renderTarget, this.clear );
 
 	}
 

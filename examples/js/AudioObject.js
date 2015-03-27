@@ -38,9 +38,9 @@ THREE.AudioObject = function ( url, volume, playbackRate, loop ) {
 
 		try {
 
-			this.context = new webkitAudioContext();
+			THREE.AudioObject.prototype.context = new webkitAudioContext();
 
-		} catch( error ) {
+		} catch ( error ) {
 
 			console.warn( "THREE.AudioObject: webkitAudioContext not found" );
 			return this;
@@ -110,17 +110,16 @@ THREE.AudioObject = function ( url, volume, playbackRate, loop ) {
 		oldSoundPosition.copy( soundPosition );
 		oldCameraPosition.copy( cameraPosition );
 
-		soundPosition.copy( this.matrixWorld.getPosition() );
-		cameraPosition.copy( camera.matrixWorld.getPosition() );
+		soundPosition.setFromMatrixPosition( this.matrixWorld );
+		cameraPosition.setFromMatrixPosition( camera.matrixWorld );
 
-		soundDelta.sub( soundPosition, oldSoundPosition );
-		cameraDelta.sub( cameraPosition, oldCameraPosition );
+		soundDelta.subVectors( soundPosition, oldSoundPosition );
+		cameraDelta.subVectors( cameraPosition, oldCameraPosition );
 
 		cameraUp.copy( camera.up );
 
 		cameraFront.set( 0, 0, -1 );
-		camera.matrixWorld.rotateAxis( cameraFront );
-		cameraFront.normalize();
+		cameraFront.transformDirection( camera.matrixWorld );
 
 		this.listener.setPosition( cameraPosition.x, cameraPosition.y, cameraPosition.z );
 		this.listener.setVelocity( cameraDelta.x, cameraDelta.y, cameraDelta.z );
@@ -132,8 +131,7 @@ THREE.AudioObject = function ( url, volume, playbackRate, loop ) {
 		if ( this.directionalSource ) {
 
 			soundFront.set( 0, 0, -1 );
-			this.matrixWorld.rotateAxis( soundFront );
-			soundFront.normalize();
+			soundFront.transformDirection( this.matrixWorld );
 
 			soundUp.copy( this.up );
 			this.panner.setOrientation( soundFront.x, soundFront.y, soundFront.z, soundUp.x, soundUp.y, soundUp.z );
@@ -165,6 +163,7 @@ THREE.AudioObject = function ( url, volume, playbackRate, loop ) {
 };
 
 THREE.AudioObject.prototype = Object.create( THREE.Object3D.prototype );
+THREE.AudioObject.prototype.constructor = THREE.AudioObject;
 
 THREE.AudioObject.prototype.context = null;
 THREE.AudioObject.prototype.type = null;

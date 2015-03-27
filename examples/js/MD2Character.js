@@ -183,7 +183,7 @@ THREE.MD2Character = function () {
 
 	function loadTextures( baseUrl, textureUrls ) {
 
-		var mapping = new THREE.UVMapping();
+		var mapping = THREE.UVMapping;
 		var textures = [];
 
 		for ( var i = 0; i < textureUrls.length; i ++ ) {
@@ -202,15 +202,15 @@ THREE.MD2Character = function () {
 		geometry.computeMorphNormals();
 
 		var whiteMap = THREE.ImageUtils.generateDataTexture( 1, 1, new THREE.Color( 0xffffff ) );
-		var materialWireframe = new THREE.MeshPhongMaterial( { color: 0xffaa00, specular: 0x111111, shininess: 50, wireframe: true, shading: THREE.SmoothShading, map: whiteMap, morphTargets: true, morphNormals: true, perPixel: true, metal: false } );
+		var materialWireframe = new THREE.MeshPhongMaterial( { color: 0xffaa00, specular: 0x111111, shininess: 50, wireframe: true, shading: THREE.SmoothShading, map: whiteMap, morphTargets: true, morphNormals: true, metal: false } );
 
-		var materialTexture = new THREE.MeshPhongMaterial( { color: 0xffffff, specular: 0x111111, shininess: 50, wireframe: false, shading: THREE.SmoothShading, map: skinMap, morphTargets: true, morphNormals: true, perPixel: true, metal: false } );
+		var materialTexture = new THREE.MeshPhongMaterial( { color: 0xffffff, specular: 0x111111, shininess: 50, wireframe: false, shading: THREE.SmoothShading, map: skinMap, morphTargets: true, morphNormals: true, metal: false } );
 		materialTexture.wrapAround = true;
 
 		//
 
 		var mesh = new THREE.MorphAnimMesh( geometry, materialTexture );
-		mesh.rotation.y = -Math.PI/2;
+		mesh.rotation.y = -Math.PI / 2;
 
 		mesh.castShadow = true;
 		mesh.receiveShadow = true;

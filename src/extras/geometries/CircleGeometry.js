@@ -4,50 +4,56 @@
 
 THREE.CircleGeometry = function ( radius, segments, thetaStart, thetaLength ) {
 
-    THREE.Geometry.call( this );
+	THREE.Geometry.call( this );
 
-    radius = radius || 50;
+	this.type = 'CircleGeometry';
 
-    thetaStart = thetaStart !== undefined ? thetaStart : 0;
-    thetaLength = thetaLength !== undefined ? thetaLength : Math.PI * 2;
-    segments = segments !== undefined ? Math.max( 3, segments ) : 8;
+	this.parameters = {
+		radius: radius,
+		segments: segments,
+		thetaStart: thetaStart,
+		thetaLength: thetaLength
+	};
 
-    var i, uvs = [],
-    center = new THREE.Vector3(), centerUV = new THREE.UV( 0.5, 0.5 );
+	radius = radius || 50;
+	segments = segments !== undefined ? Math.max( 3, segments ) : 8;
 
-    this.vertices.push(center);
-    uvs.push( centerUV );
+	thetaStart = thetaStart !== undefined ? thetaStart : 0;
+	thetaLength = thetaLength !== undefined ? thetaLength : Math.PI * 2;
 
-    for ( i = 0; i <= segments; i ++ ) {
+	var i, uvs = [],
+	center = new THREE.Vector3(), centerUV = new THREE.Vector2( 0.5, 0.5 );
 
-        var vertex = new THREE.Vector3();
+	this.vertices.push(center);
+	uvs.push( centerUV );
 
-        vertex.x = radius * Math.cos( thetaStart + i / segments * thetaLength );
-        vertex.y = radius * Math.sin( thetaStart + i / segments * thetaLength );
+	for ( i = 0; i <= segments; i ++ ) {
 
-        this.vertices.push( vertex );
-        uvs.push( new THREE.UV( ( vertex.x / radius + 1 ) / 2, - ( vertex.y / radius + 1 ) / 2 + 1 ) );
+		var vertex = new THREE.Vector3();
+		var segment = thetaStart + i / segments * thetaLength;
 
-    }
+		vertex.x = radius * Math.cos( segment );
+		vertex.y = radius * Math.sin( segment );
 
-    var n = new THREE.Vector3( 0, 0, -1 );
+		this.vertices.push( vertex );
+		uvs.push( new THREE.Vector2( ( vertex.x / radius + 1 ) / 2, ( vertex.y / radius + 1 ) / 2 ) );
 
-    for ( i = 1; i <= segments; i ++ ) {
+	}
 
-        var v1 = i;
-        var v2 = i + 1 ;
-        var v3 = 0;
+	var n = new THREE.Vector3( 0, 0, 1 );
 
-        this.faces.push( new THREE.Face3( v1, v2, v3, [ n, n, n ] ) );
-        this.faceVertexUvs[ 0 ].push( [ uvs[ i ], uvs[ i + 1 ], centerUV ] );
+	for ( i = 1; i <= segments; i ++ ) {
 
-    }
+		this.faces.push( new THREE.Face3( i, i + 1, 0, [ n.clone(), n.clone(), n.clone() ] ) );
+		this.faceVertexUvs[ 0 ].push( [ uvs[ i ].clone(), uvs[ i + 1 ].clone(), centerUV.clone() ] );
 
-    this.computeCentroids();
-    this.computeFaceNormals();
+	}
 
-    this.boundingSphere = { radius: radius };
+	this.computeFaceNormals();
+
+	this.boundingSphere = new THREE.Sphere( new THREE.Vector3(), radius );
 
 };
 
 THREE.CircleGeometry.prototype = Object.create( THREE.Geometry.prototype );
+THREE.CircleGeometry.prototype.constructor = THREE.CircleGeometry;

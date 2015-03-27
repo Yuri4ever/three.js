@@ -39,15 +39,6 @@
 				display:none;
 			}
 
-			#start {
-				color:#fff;
-				text-shadow: #000 0px 0px 2px;
-				padding:0.1em 0.3em;
-				width:3em;
-				text-align: center;
-				display:none;
-			}
-
 			.shadow {
 				-moz-box-shadow: 0px 0px 5px #000;
 				-webkit-box-shadow: 0px 0px 5px #000;
@@ -84,58 +75,12 @@
 			a { color:red }
 			canvas { pointer-events:none; z-index:10; }
 
-			#scene_explorer {
-				background:transparent;
-				color:#fff;
-				width:200px;
-				position:absolute;
-				text-align:left;
-				top:0px;
-				z-index:200;
-				overflow:auto;
-			}
-
-			#section_exp {
-				background:rgba(0,0,50,0.5);
-				padding:0.5em 0;
-				display:none;
-			}
-
-			#scene_explorer h3 {
-				font-size:1em;
-				padding:0;
-				margin:0;
-				color:orange;
-			}
-
-			#scene_explorer a {
-				color:#555;
-				font-weight:bold;
-				text-decoration:none;
-				font-size:1.2em;
-				font-family:Monospace;
-			}
-			#scene_explorer a:hover {
-				background:#555;
-				color:rgba(0,0,50,1);
-			}
-
-			.part {
-				display:none;
-				padding:0 0 0.5em 2em;
-			}
-
 		</style>
 	</head>
 
 	<body>
 		<div id="info">
-			<a href="http://github.com/mrdoob/three.js">three.js</a> - scene loader test
-		</div>
-
-		<div id="scene_explorer">
-			<a id="plus_exp" href="#">[+]</a>
-			<div id="section_exp"></div>
+			<a href="http://threejs.org">three.js</a> - scene loader test
 		</div>
 
 		<div id="progress">
@@ -143,14 +88,28 @@
 
 			<center>
 				<div id="progressbar" class="shadow"><div id="bar" class="shadow"></div></div>
-				<div id="start" class="disabled">Start</div>
 			</center>
 		</div>
 
 		<script src="../build/three.min.js"></script>
 
+		<script src="js/loaders/DDSLoader.js"></script>
+
+		<script src="js/loaders/ctm/lzma.js"></script>
+		<script src="js/loaders/ctm/ctm.js"></script>
+		<script src="js/loaders/ctm/CTMLoader.js"></script>
+
+		<script src="js/loaders/deprecated/SceneLoader.js"></script>
+		<script src="js/loaders/BinaryLoader.js"></script>
+		<script src="js/loaders/OBJLoader.js"></script>
+		<script src="js/loaders/VTKLoader.js"></script>
+		<script src="js/loaders/STLLoader.js"></script>
+		<script src="js/loaders/ColladaLoader.js"></script>
+		<script src="js/loaders/UTF8Loader.js"></script>
+		<script src="js/loaders/MTLLoader.js"></script>
+
 		<script src="js/Detector.js"></script>
-		<script src="js/Stats.js"></script>
+		<script src="js/libs/stats.min.js"></script>
 
 		<script>
 
@@ -170,8 +129,17 @@
 			var windowHalfY = window.innerHeight / 2;
 
 			var rotatingObjects = [];
+			var morphAnimatedObjects = [];
+
+			var clock = new THREE.Clock();
 
 			document.addEventListener( 'mousemove', onDocumentMouseMove, false );
+
+			THREE.DefaultLoadingManager.onProgress = function ( item, loaded, total ) {
+
+				console.log( item, loaded, total );
+
+			};
 
 			init();
 			animate();
@@ -179,39 +147,6 @@
 			function $( id ) {
 
 				return document.getElementById( id );
-
-			}
-
-			function handle_update( result, pieces ) {
-
-				refreshSceneView( result );
-				//renderer.initWebGLObjects( result.scene );
-
-				var m, material, count = 0;
-
-				for ( m in result.materials ) {
-
-					material = result.materials[ m ];
-					if ( ! ( material instanceof THREE.MeshFaceMaterial ) ) {
-
-						if( !material.program ) {
-
-							renderer.initMaterial( material, result.scene.__lights, result.scene.fog );
-
-							count += 1;
-
-							if( count > pieces ) {
-
-								//console.log("xxxxxxxxx");
-								break;
-
-							}
-
-						}
-
-					}
-
-				}
 
 			}
 
@@ -226,9 +161,13 @@
 				scene = loadScene.scene;
 
 				renderer = new THREE.WebGLRenderer( { antialias: true } );
+				renderer.setPixelRatio( window.devicePixelRatio );
 				renderer.setSize( SCREEN_WIDTH, SCREEN_HEIGHT );
 				renderer.domElement.style.position = "relative";
 				container.appendChild( renderer.domElement );
+
+				renderer.gammaInput = true;
+				renderer.gammaOutput = true;
 
 				stats = new Stats();
 				stats.domElement.style.position = 'absolute';
@@ -236,8 +175,6 @@
 				stats.domElement.style.right = '0px';
 				stats.domElement.style.zIndex = 100;
 				container.appendChild( stats.domElement );
-
-				$( "start" ).addEventListener( 'click', onStartClick, false );
 
 				var callbackProgress = function( progress, result ) {
 
@@ -250,77 +187,72 @@
 
 					$( "bar" ).style.width = bar + "px";
 
-					count = 0;
-					for ( var m in result.materials ) count++;
-
-					handle_update( result, Math.floor( count/total ) );
-
-				}
-
-				var callbackSync = function( result ) {
-
-					/*
-
-					// uncomment to see progressive scene loading
-
-					scene = result.scene;
-					camera = result.currentCamera;
-
-					camera.aspect = window.innerWidth / window.innerHeight;
-					camera.updateProjectionMatrix();
-
-					renderer.setClearColor( result.bgColor, result.bgAlpha );
-
-					*/
-
-					//handle_update( result, 1 );
-
 				}
 
 				var callbackFinished = function ( result ) {
 
 					loaded = result;
 
-					var mat_veyron = result.geometries[ "veyron" ].materials;
-
-					mat_veyron[ 0 ] = result.materials[ "interior" ];
-					mat_veyron[ 1 ] = result.materials[ "chrome" ];
-					mat_veyron[ 2 ] = result.materials[ "darkerchrome" ];
-					mat_veyron[ 3 ] = result.materials[ "glass" ];
-					mat_veyron[ 4 ] = result.materials[ "chrome" ];
-					mat_veyron[ 5 ] = result.materials[ "chrome" ];
-					mat_veyron[ 6 ] = result.materials[ "backlights" ];
-					mat_veyron[ 7 ] = result.materials[ "backsignals" ];
-
 					$( "message" ).style.display = "none";
 					$( "progressbar" ).style.display = "none";
-					$( "start" ).style.display = "block";
-					$( "start" ).className = "enabled";
 
-					handle_update( result, 1 );
+					result.scene.traverse( function ( object ) {
 
-					THREE.SceneUtils.traverseHierarchy( result.scene, function ( child ) {
+						if ( object.userData.rotating === true ) {
 
-						if ( child.properties.rotating === true ) {
+							rotatingObjects.push( object );
 
-							rotatingObjects.push( child );
+						}
+
+						if ( object instanceof THREE.MorphAnimMesh ) {
+
+							morphAnimatedObjects.push( object );
+
+						}
+
+						if ( object instanceof THREE.SkinnedMesh ) {
+
+							if ( object.geometry.animation ) {
+
+								var animation = new THREE.Animation( object, object.geometry.animation );
+								animation.play();
+
+							}
 
 						}
 
 					} );
 
+					//
+
+					$( "progress" ).style.display = "none";
+
+					camera = loaded.currentCamera;
+					camera.aspect = window.innerWidth / window.innerHeight;
+					camera.updateProjectionMatrix();
+
+					scene = loaded.scene;
+
 				}
 
 				$( "progress" ).style.display = "block";
 
+				THREE.Loader.Handlers.add( /\.dds$/i, new THREE.DDSLoader() );
+
 				var loader = new THREE.SceneLoader();
 
-				loader.callbackSync = callbackSync;
+				loader.addGeometryHandler( "binary", THREE.BinaryLoader );
+				loader.addGeometryHandler( "ctm", THREE.CTMLoader );
+				loader.addGeometryHandler( "vtk", THREE.VTKLoader );
+				loader.addGeometryHandler( "stl", THREE.STLLoader );
+
+				loader.addHierarchyHandler( "obj", THREE.OBJLoader );
+				loader.addHierarchyHandler( "dae", THREE.ColladaLoader );
+				loader.addHierarchyHandler( "utf8", THREE.UTF8Loader );
+
 				loader.callbackProgress = callbackProgress;
 
 				loader.load( "scenes/test_scene.js", callbackFinished );
-
-				$( "plus_exp" ).addEventListener( 'click', createToggle( "exp" ), false );
 
 				//
 
@@ -340,27 +272,7 @@
 
 			}
 
-			function setButtonActive( id ) {
-
-				$( "start" ).style.backgroundColor = "green";
-
-			}
-
-			function onStartClick() {
-
-				$( "progress" ).style.display = "none";
-
-				camera = loaded.currentCamera;
-				camera.aspect = window.innerWidth / window.innerHeight;
-				camera.updateProjectionMatrix();
-
-				scene = loaded.scene;
-
-				renderer.setClearColor( loaded.bgColor, loaded.bgAlpha );
-
-			}
-
-			function onDocumentMouseMove(event) {
+			function onDocumentMouseMove( event ) {
 
 				mouseX = ( event.clientX - windowHalfX );
 				mouseY = ( event.clientY - windowHalfY );
@@ -382,7 +294,7 @@
 				var object, geometry, material, light, count = 500, range = 200;
 
 				material = new THREE.MeshLambertMaterial( { color:0xffffff } );
-				geometry = new THREE.CubeGeometry( 5, 5, 5 );
+				geometry = new THREE.BoxGeometry( 5, 5, 5 );
 
 				for( var i = 0; i < count; i++ ) {
 
@@ -429,94 +341,35 @@
 
 			function render() {
 
+				var delta = clock.getDelta();
+
 				camera.position.x += ( mouseX - camera.position.x ) * .001;
 				camera.position.y += ( - mouseY - camera.position.y ) * .001;
 
 				camera.lookAt( scene.position );
 
+				// update skinning
+
+				THREE.AnimationHandler.update( delta * 0.75 );
+
 				for ( var i = 0; i < rotatingObjects.length; i ++ ) {
 
 					var object = rotatingObjects[ i ];
 
-					object.rotation.x += 0.01;
-					object.rotation.y += 0.02;
+					if ( object.userData.rotateX ) object.rotation.x += 1 * delta;
+					if ( object.userData.rotateY ) object.rotation.y += 0.5 * delta;
+
+				}
+
+				for ( var i = 0; i < morphAnimatedObjects.length; i ++ ) {
+
+					var object = morphAnimatedObjects[ i ];
+
+					object.updateAnimation( 1000 * delta );
 
 				}
 
 				renderer.render( scene, camera );
-
-			}
-
-			// Scene explorer user interface
-
-			function toggle( id ) {
-
-				var scn = $( "section_" + id ).style,
-					btn = $( "plus_" + id );
-
-				if ( scn.display == "block" ) {
-
-					scn.display = "none";
-					btn.innerHTML = "[+]";
-
-				}
-				else {
-
-					scn.display = "block";
-					btn.innerHTML = "[-]";
-
-				}
-
-			}
-
-			function createToggle( label ) { return function() { toggle( label ) } };
-
-			function refreshSceneView( result ) {
-
-				$( "section_exp" ).innerHTML = generateSceneView( result );
-
-				var config = [ "obj", "geo", "mat", "tex", "lit", "cam" ];
-
-				for ( var i = 0; i < config.length; i++ )
-					$( "plus_" + config[i] ).addEventListener( 'click', createToggle( config[i] ), false );
-
-			}
-
-			function generateSection( label, id, objects ) {
-
-				var html = "";
-
-				html += "<h3><a id='plus_" + id + "' href='#'>[+]</a> " + label + "</h3>";
-				html += "<div id='section_" + id + "' class='part'>";
-
-				for( var o in objects ) {
-
-					html += o + "<br/>";
-
-				}
-				html += "</div>";
-
-				return html;
-
-			}
-
-			function generateSceneView( result ) {
-
-				var config = [
-				[ "Objects",    "obj", result.objects ],
-				[ "Geometries", "geo", result.geometries ],
-				[ "Materials",  "mat", result.materials ],
-				[ "Textures",   "tex", result.textures ],
-				[ "Lights",     "lit", result.lights ],
-				[ "Cameras",    "cam", result.cameras ]
-				];
-
-				var html = "";
-
-				for ( var i = 0; i < config.length; i++ )
-					html += generateSection( config[i][0], config[i][1], config[i][2] );
-
-				return html;
 
 			}
 
